@@ -57,6 +57,10 @@ namespace ortc
     const int SRTP_MASTER_KEY_BASE64_LEN = SRTP_MASTER_KEY_LEN * 4 / 3;
     const int SRTP_MASTER_KEY_KEY_LEN = 16;
     const int SRTP_MASTER_KEY_SALT_LEN = 14;
+    
+    //to do: check max len
+    static const int MAX_RTP_LEN = 1500;
+    static const int MAX_RTCP_LEN = 1500;
 
     // We don't pull the RTP constants from rtputils.h, to avoid a layer violation.
     static const size_t kDtlsRecordHeaderLen = 13;
@@ -123,7 +127,10 @@ namespace ortc
                          int bytes_in,
                          int* bytes_out)
     {
-      
+      if (ProtectRtp(in_data, bytes_in, MAX_RTP_LEN, bytes_out))
+      {
+        memcpy(out_data, in_data, *bytes_out);
+      }
     }
     
     void RTCDTLSTransport::decrypt(
@@ -133,7 +140,10 @@ namespace ortc
                          int bytes_in,
                          int* bytes_out)
     {
-      
+      if (UnprotectRtp (in_data, bytes_in,bytes_out))
+      {
+        memcpy(out_data, in_data, *bytes_out);
+      }
     }
     
     void RTCDTLSTransport::encrypt_rtcp(
@@ -143,7 +153,10 @@ namespace ortc
                               int bytes_in,
                               int* bytes_out)
     {
-      
+      if (ProtectRtcp(in_data, bytes_in, MAX_RTCP_LEN, bytes_out))
+      {
+        memcpy(out_data, in_data, *bytes_out);
+      }
     }
     
     void RTCDTLSTransport::decrypt_rtcp(
@@ -153,7 +166,10 @@ namespace ortc
                               int bytes_in,
                               int* bytes_out)
     {
-      
+      if (UnprotectRtp (in_data, bytes_in,bytes_out))
+      {
+        memcpy(out_data, in_data, *bytes_out);
+      }
     }
     
     
