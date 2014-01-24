@@ -271,8 +271,11 @@ namespace ortc
                                              );
       
       virtual ULONG getSSRC() = 0;
-      virtual int getChannel() = 0;
-      virtual void setChannel(int channel) = 0;
+      virtual int getSource() = 0;
+      virtual void setSource(int source) = 0;
+      virtual std::list<int> getChannels() = 0;
+      virtual void addChannel(int channel) = 0;
+      virtual void removeChannel(int channel) = 0;
 
       virtual void start() = 0;
       virtual void stop() = 0;
@@ -403,8 +406,11 @@ namespace ortc
                                              );
       
       virtual ULONG getSSRC() = 0;
-      virtual int getChannel() = 0;
-      virtual void setChannel(int channel) = 0;
+      virtual int getSource() = 0;
+      virtual void setSource(int source) = 0;
+      virtual std::list<int> getChannels() = 0;
+      virtual void addChannel(int channel) = 0;
+      virtual void removeChannel(int channel) = 0;
 
       virtual void start() = 0;
       virtual void stop() = 0;
@@ -582,8 +588,6 @@ namespace ortc
       #pragma mark
       
       virtual ULONG getSSRC();
-      virtual int getChannel();
-      virtual void setChannel(int channel);
       
       //-----------------------------------------------------------------------
       #pragma mark
@@ -640,8 +644,6 @@ namespace ortc
       IMediaStreamTrack::MediaStreamTrackStates mReadyState;
       
       ULONG mSSRC;
-      int mSource;
-      int mChannel;
       IMediaTransportPtr mTransport;
     };
     
@@ -779,8 +781,11 @@ namespace ortc
       #pragma mark
       
       virtual ULONG getSSRC();
-      virtual int getChannel();
-      virtual void setChannel(int channel);
+      virtual int getSource();
+      virtual void setSource(int source);
+      virtual std::list<int> getChannels();
+      virtual void addChannel(int channel);
+      virtual void removeChannel(int channel);
       virtual void start();
       //virtual void stop();
       virtual SendMediaTransportPtr getTransport();
@@ -800,6 +805,9 @@ namespace ortc
       #pragma mark LocalAudioStreamTrack => (data)
       #pragma mark
       
+    protected:
+      int mSource;
+      std::list<int> mChannels;
     };
     
     //-----------------------------------------------------------------------
@@ -875,7 +883,7 @@ namespace ortc
       #pragma mark
       
     protected:
-      
+      int mChannel;
     };
     
     //-----------------------------------------------------------------------
@@ -947,7 +955,8 @@ namespace ortc
       #pragma mark RemoteSendAudioStreamTrack => (data)
       #pragma mark
       
-      
+    protected:
+      int mChannel;
     };
     
     //-----------------------------------------------------------------------
@@ -1000,8 +1009,11 @@ namespace ortc
       #pragma mark
 
       virtual ULONG getSSRC();
-      virtual int getChannel();
-      virtual void setChannel(int channel);
+      virtual int getSource();
+      virtual void setSource(int source);
+      virtual std::list<int> getChannels();
+      virtual void addChannel(int channel);
+      virtual void removeChannel(int channel);
       virtual void start();
       //virtual void stop();
 
@@ -1037,7 +1049,8 @@ namespace ortc
       #pragma mark
       
     protected:
-      
+      int mSource;
+      std::list<int> mChannels;
     };
     
     //-----------------------------------------------------------------------
@@ -1109,7 +1122,8 @@ namespace ortc
       #pragma mark RemoteReceiveVideoStreamTrack => (data)
       #pragma mark
       
-      
+    protected:
+      int mChannel;
     };
     
     //-----------------------------------------------------------------------
@@ -1181,7 +1195,8 @@ namespace ortc
       #pragma mark RemoteSendVideoStreamTrack => (data)
       #pragma mark
       
-      
+    protected:
+      int mChannel;
     };
     
     //-------------------------------------------------------------------------

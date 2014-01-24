@@ -11,14 +11,15 @@
     IBOutlet UIButton* _btnTest6;
     IBOutlet UIImageView* _imgView1;
     IBOutlet UIImageView* _imgView2;
+    IBOutlet UIImageView* _imgView3;
   
     IBOutlet UITextField* receiverIPAddressTextField;
   
-    ortc::IMediaManagerDelegatePtr mediaManagerDelegatePtr;
-    ortc::IMediaStreamPtr sendMediaStreamPtr;
-    ortc::IMediaStreamPtr receiveMediaStreamPtr;
-    int audioChannel;
-    int videoChannel;
+    ortc::IMediaManagerDelegatePtr mediaManagerDelegate;
+    std::list<ortc::IMediaStreamPtr> sendMediaStreams;
+    std::list<ortc::IMediaStreamPtr> receiveMediaStreams;
+    std::list<int> audioChannels;
+    std::list<int> videoChannels;
 }
 
 -(IBAction)test1;

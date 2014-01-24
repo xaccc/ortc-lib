@@ -337,8 +337,8 @@ namespace ortc
     //-----------------------------------------------------------------------
     int TestMediaEngine::internalSetVoiceSendTransportParameters(int channelId)
     {
-      get(mLastError) = voice_channel_transports_[channelId]->SetSendDestination(mReceiverAddress.c_str(), 20010);
-      get(mLastError) = voice_channel_transports_[channelId]->SetLocalReceiver(20010);
+      get(mLastError) = voice_channel_transports_[channelId]->SetSendDestination(mReceiverAddress.c_str(), 20010 + channelId * 2);
+      get(mLastError) = voice_channel_transports_[channelId]->SetLocalReceiver(20010 + channelId * 2);
       return mLastError;
     }
     
@@ -366,8 +366,8 @@ namespace ortc
     //-----------------------------------------------------------------------
     int TestMediaEngine::internalSetVideoSendTransportParameters(int channelId)
     {
-      get(mLastError) = video_channel_transports_[channelId]->SetSendDestination(mReceiverAddress.c_str(), 20000);
-      get(mLastError) = video_channel_transports_[channelId]->SetLocalReceiver(20000);
+      get(mLastError) = video_channel_transports_[channelId]->SetSendDestination(mReceiverAddress.c_str(), 20000 + channelId * 2);
+      get(mLastError) = video_channel_transports_[channelId]->SetLocalReceiver(20000 + channelId * 2);
       return mLastError;
     }
     

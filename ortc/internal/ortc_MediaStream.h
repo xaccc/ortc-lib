@@ -66,10 +66,12 @@ namespace ortc
       virtual void removeTrack(IMediaStreamTrackPtr track) = 0;
 
       virtual String getCNAME() = 0;
-      virtual int getAudioChannel() = 0;
-      virtual void setAudioChannel(int channel) = 0;
-      virtual int getVideoChannel() = 0;
-      virtual void setVideoChannel(int channel) = 0;
+      virtual std::list<int> getAudioChannels() = 0;
+      virtual void addAudioChannel(int channel) = 0;
+      virtual void removeAudioChannel(int channel) = 0;
+      virtual std::list<int> getVideoChannels() = 0;
+      virtual void addVideoChannel(int channel) = 0;
+      virtual void removeVideoChannel(int channel) = 0;
 
       virtual void setVoiceRecordFile(String fileName) = 0;
       virtual String getVoiceRecordFile() const = 0;
@@ -141,10 +143,12 @@ namespace ortc
       
     protected:
       virtual String getCNAME();
-      virtual int getAudioChannel();
-      virtual void setAudioChannel(int channel);
-      virtual int getVideoChannel();
-      virtual void setVideoChannel(int channel);
+      virtual std::list<int> getAudioChannels();
+      virtual void addAudioChannel(int channel);
+      virtual void removeAudioChannel(int channel);
+      virtual std::list<int> getVideoChannels();
+      virtual void addVideoChannel(int channel);
+      virtual void removeVideoChannel(int channel);
 
       virtual void setVoiceRecordFile(String fileName);
       virtual String getVoiceRecordFile() const;
@@ -206,8 +210,8 @@ namespace ortc
       
       String mCNAME;
       
-      int mAudioChannel;
-      int mVideoChannel;
+      std::list<int> mAudioChannels;
+      std::list<int> mVideoChannels;
       String mVoiceRecordFile;
     };
     

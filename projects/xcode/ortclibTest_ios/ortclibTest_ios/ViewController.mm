@@ -12,7 +12,7 @@
 
 -(IBAction)test1
 {
-    IMediaManager::setup(mediaManagerDelegatePtr);
+    IMediaManager::setup(mediaManagerDelegate);
   
     IMediaManagerPtr mediaManager = IMediaManager::singleton();
   
@@ -21,8 +21,8 @@
 
 -(IBAction)test2
 {
-    ortc::MediaStreamTrackListPtr localAudioTracks = sendMediaStreamPtr->getAudioTracks();
-    ortc::MediaStreamTrackListPtr localVideoTracks = sendMediaStreamPtr->getVideoTracks();
+    ortc::MediaStreamTrackListPtr localAudioTracks = sendMediaStreams.front()->getAudioTracks();
+    ortc::MediaStreamTrackListPtr localVideoTracks = sendMediaStreams.front()->getVideoTracks();
   
     ortc::internal::LocalAudioStreamTrackPtr localAudioStreamTrack =
         boost::dynamic_pointer_cast<ortc::internal::LocalAudioStreamTrack>(localAudioTracks->front());
@@ -33,38 +33,41 @@
   
     localAudioStreamTrack->forMediaManager().start();
     localVideoStreamTrack->forMediaManager().start();
-  
-    ortc::internal::IMediaEnginePtr mediaEngine = ortc::internal::IMediaEngine::singleton();
-  
-    audioChannel = mediaEngine->createVoiceChannel();
-    videoChannel = mediaEngine->createVideoChannel();
-    ortc::internal::MediaStreamPtr mediaStream =
-        boost::dynamic_pointer_cast<ortc::internal::MediaStream>(sendMediaStreamPtr);
-  
-    mediaStream->forMediaManager().setAudioChannel(audioChannel);
-    mediaStream->forMediaManager().setVideoChannel(videoChannel);
 }
 
 -(IBAction)test3
 {
-    receiveMediaStreamPtr = ortc::internal::IMediaStreamForMediaManager::create(IMessageQueuePtr(), IMediaStreamDelegatePtr());
+    ortc::internal::IMediaEnginePtr mediaEngine = ortc::internal::IMediaEngine::singleton();
+  
+    int audioChannel = mediaEngine->createVoiceChannel();
+    int videoChannel = mediaEngine->createVideoChannel();
+    audioChannels.push_back(audioChannel);
+    videoChannels.push_back(videoChannel);
+  
+    ortc::internal::MediaStreamPtr sendMediaStream =
+        boost::dynamic_pointer_cast<ortc::internal::MediaStream>(sendMediaStreams.front());
+  
+    sendMediaStream->forMediaManager().addAudioChannel(audioChannel);
+    sendMediaStream->forMediaManager().addVideoChannel(videoChannel);
+  
+    receiveMediaStreams.push_back(ortc::internal::IMediaStreamForMediaManager::create(IMessageQueuePtr(), IMediaStreamDelegatePtr()));
     ortc::internal::RemoteReceiveAudioStreamTrackPtr remoteAudioStreamTrack =
         ortc::internal::IRemoteReceiveAudioStreamTrackForMediaManager::create(IMessageQueuePtr(), IMediaStreamTrackDelegatePtr());
     ortc::internal::RemoteReceiveVideoStreamTrackPtr remoteVideoStreamTrack =
         ortc::internal::IRemoteReceiveVideoStreamTrackForMediaManager::create(IMessageQueuePtr(), IMediaStreamTrackDelegatePtr());
   
-    ortc::internal::MediaStreamPtr mediaStream = boost::dynamic_pointer_cast<ortc::internal::MediaStream>(receiveMediaStreamPtr);
+    ortc::internal::MediaStreamPtr receiveMediaStream = boost::dynamic_pointer_cast<ortc::internal::MediaStream>(receiveMediaStreams.back());
   
-    mediaStream->forMediaManager().setAudioChannel(audioChannel);
-    mediaStream->forMediaManager().setVideoChannel(videoChannel);
+    receiveMediaStream->forMediaManager().addAudioChannel(audioChannel);
+    receiveMediaStream->forMediaManager().addVideoChannel(videoChannel);
 
     remoteVideoStreamTrack->forMediaManager().setRenderView((__bridge void*)_imgView2);
   
-    mediaStream->forMediaManager().addTrack(remoteAudioStreamTrack);
-    mediaStream->forMediaManager().addTrack(remoteVideoStreamTrack);
+    receiveMediaStream->forMediaManager().addTrack(remoteAudioStreamTrack);
+    receiveMediaStream->forMediaManager().addTrack(remoteVideoStreamTrack);
   
-    ortc::MediaStreamTrackListPtr localAudioTracks = sendMediaStreamPtr->getAudioTracks();
-    ortc::MediaStreamTrackListPtr localVideoTracks = sendMediaStreamPtr->getVideoTracks();
+    ortc::MediaStreamTrackListPtr localAudioTracks = sendMediaStream->forMediaManager().getAudioTracks();
+    ortc::MediaStreamTrackListPtr localVideoTracks = sendMediaStream->forMediaManager().getVideoTracks();
   
     ortc::internal::LocalAudioStreamTrackPtr localAudioStreamTrack =
         boost::dynamic_pointer_cast<ortc::internal::LocalAudioStreamTrack>(localAudioTracks->front());
@@ -79,6 +82,34 @@
 
 -(IBAction)test4
 {
+    ortc::internal::IMediaEnginePtr mediaEngine = ortc::internal::IMediaEngine::singleton();
+    
+    int audioChannel = mediaEngine->createVoiceChannel();
+    int videoChannel = mediaEngine->createVideoChannel();
+    audioChannels.push_back(audioChannel);
+    videoChannels.push_back(videoChannel);
+    
+    ortc::internal::MediaStreamPtr sendMediaStream =
+        boost::dynamic_pointer_cast<ortc::internal::MediaStream>(sendMediaStreams.front());
+    
+    sendMediaStream->forMediaManager().addAudioChannel(audioChannel);
+    sendMediaStream->forMediaManager().addVideoChannel(videoChannel);
+    
+    receiveMediaStreams.push_back(ortc::internal::IMediaStreamForMediaManager::create(IMessageQueuePtr(), IMediaStreamDelegatePtr()));
+    ortc::internal::RemoteReceiveAudioStreamTrackPtr remoteAudioStreamTrack =
+        ortc::internal::IRemoteReceiveAudioStreamTrackForMediaManager::create(IMessageQueuePtr(), IMediaStreamTrackDelegatePtr());
+    ortc::internal::RemoteReceiveVideoStreamTrackPtr remoteVideoStreamTrack =
+        ortc::internal::IRemoteReceiveVideoStreamTrackForMediaManager::create(IMessageQueuePtr(), IMediaStreamTrackDelegatePtr());
+    
+    ortc::internal::MediaStreamPtr receiveMediaStream = boost::dynamic_pointer_cast<ortc::internal::MediaStream>(receiveMediaStreams.back());
+    
+    receiveMediaStream->forMediaManager().addAudioChannel(audioChannel);
+    receiveMediaStream->forMediaManager().addVideoChannel(videoChannel);
+    
+    remoteVideoStreamTrack->forMediaManager().setRenderView((__bridge void*)_imgView3);
+    
+    receiveMediaStream->forMediaManager().addTrack(remoteAudioStreamTrack);
+    receiveMediaStream->forMediaManager().addTrack(remoteVideoStreamTrack);
 }
 
 -(IBAction)test5
@@ -87,8 +118,8 @@
 
 -(IBAction)test6
 {
-    ortc::MediaStreamTrackListPtr audioTracks = sendMediaStreamPtr->getAudioTracks();
-    ortc::MediaStreamTrackListPtr videoTracks = sendMediaStreamPtr->getVideoTracks();
+    ortc::MediaStreamTrackListPtr audioTracks = sendMediaStreams.front()->getAudioTracks();
+    ortc::MediaStreamTrackListPtr videoTracks = sendMediaStreams.front()->getVideoTracks();
   
     ortc::internal::LocalAudioStreamTrackPtr localAudioStreamTrack =
         boost::dynamic_pointer_cast<ortc::internal::LocalAudioStreamTrack>(audioTracks->front());
@@ -101,7 +132,7 @@
 
 -(void)setSendMediaStream:(ortc::IMediaStreamPtr)stream
 {
-    sendMediaStreamPtr = stream;
+    sendMediaStreams.push_back(stream);
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -115,7 +146,7 @@
 //    const char* receiverIPAddress = [receiverIPAddressTextField.text UTF8String];
 //    const char* receiverIPAddress = "127.0.0.1";
   
-    mediaManagerDelegatePtr = MediaManagerDelegateWrapper::create(self);
+    mediaManagerDelegate = MediaManagerDelegateWrapper::create(self);
   
     IORTC::singleton()->setup(zsLib::MessageQueueThread::createBasic("ortc.defaultDelegateMessageQueue"),
                               zsLib::MessageQueueThread::createBasic("ortc.ortcMessageQueue"),
@@ -147,6 +178,9 @@
     [_imgView2 addObserver:self forKeyPath:@"image"
                  options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld)
                  context:NULL];
+    [_imgView3 addObserver:self forKeyPath:@"image"
+                 options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld)
+                 context:NULL];
 
 }
 
@@ -162,6 +196,11 @@
     {
         UIImage* image = [change objectForKey:NSKeyValueChangeNewKey];
         [_imgView2 setFrame:CGRectMake(_imgView2.frame.origin.x, _imgView2.frame.origin.y, image.size.width, image.size.height)];
+    }
+    else if (object == _imgView3 && [keyPath isEqualToString:@"image"])
+    {
+        UIImage* image = [change objectForKey:NSKeyValueChangeNewKey];
+        [_imgView3 setFrame:CGRectMake(_imgView3.frame.origin.x, _imgView3.frame.origin.y, image.size.width, image.size.height)];
     }
 }
 

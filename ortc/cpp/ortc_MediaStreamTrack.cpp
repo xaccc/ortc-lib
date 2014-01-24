@@ -331,9 +331,7 @@ namespace ortc
       mReadonly(false),
       mRemote(false),
       mReadyState(IMediaStreamTrack::MediaStreamTrackState_New),
-      mSSRC(0),
-      mSource(-1),
-      mChannel(-1)
+      mSSRC(0)
     {
     }
     
@@ -414,18 +412,6 @@ namespace ortc
     ULONG MediaStreamTrack::getSSRC()
     {
       return mSSRC;
-    }
-    
-    //-------------------------------------------------------------------------
-    int MediaStreamTrack::getChannel()
-    {
-      return mChannel;
-    }
-    
-    //-------------------------------------------------------------------------
-    void MediaStreamTrack::setChannel(int channel)
-    {
-      mChannel = channel;
     }
 
     //-------------------------------------------------------------------------
@@ -619,7 +605,8 @@ namespace ortc
     
     //-------------------------------------------------------------------------
     LocalAudioStreamTrack::LocalAudioStreamTrack(IMessageQueuePtr queue, IMediaStreamTrackDelegatePtr delegate) :
-      AudioStreamTrack(queue, delegate)
+      AudioStreamTrack(queue, delegate),
+      mSource(-1)
     {
       mTransport = ISendMediaTransportForMediaManager::create();
     }
@@ -713,20 +700,41 @@ namespace ortc
     }
     
     //-------------------------------------------------------------------------
-    int LocalAudioStreamTrack::getChannel()
+    int LocalAudioStreamTrack::getSource()
     {
-      return MediaStreamTrack::getChannel();
+      return mSource;
     }
     
     //-------------------------------------------------------------------------
-    void LocalAudioStreamTrack::setChannel(int channel)
+    void LocalAudioStreamTrack::setSource(int source)
     {
-      MediaStreamTrack::setChannel(channel);
+      mSource = source;
+    }
+
+    //-------------------------------------------------------------------------
+    std::list<int> LocalAudioStreamTrack::getChannels()
+    {
+      return mChannels;
+    }
+    
+    //-------------------------------------------------------------------------
+    void LocalAudioStreamTrack::addChannel(int channel)
+    {
+      mChannels.push_back(channel);
       
       IMediaEnginePtr mediaEngine = IMediaEngine::singleton();
       mediaEngine->startSendVoice(channel);
     }
     
+    //-------------------------------------------------------------------------
+    void LocalAudioStreamTrack::removeChannel(int channel)
+    {
+      mChannels.remove(channel);
+      
+      IMediaEnginePtr mediaEngine = IMediaEngine::singleton();
+      mediaEngine->stopSendVoice(channel);
+    }
+
     //-------------------------------------------------------------------------
     void LocalAudioStreamTrack::start()
     {
@@ -762,7 +770,8 @@ namespace ortc
     
     //-------------------------------------------------------------------------
     RemoteReceiveAudioStreamTrack::RemoteReceiveAudioStreamTrack(IMessageQueuePtr queue, IMediaStreamTrackDelegatePtr delegate) :
-      AudioStreamTrack(queue, delegate)
+      AudioStreamTrack(queue, delegate),
+      mChannel(-1)
     {
     }
     
@@ -857,13 +866,13 @@ namespace ortc
     //-------------------------------------------------------------------------
     int RemoteReceiveAudioStreamTrack::getChannel()
     {
-      return MediaStreamTrack::getChannel();
+      return mChannel;
     }
     
     //-------------------------------------------------------------------------
     void RemoteReceiveAudioStreamTrack::setChannel(int channel)
     {
-      MediaStreamTrack::setChannel(channel);
+      mChannel = channel;
       
       IMediaEnginePtr mediaEngine = IMediaEngine::singleton();
       mediaEngine->startReceiveVoice(channel);
@@ -911,7 +920,8 @@ namespace ortc
     
     //-------------------------------------------------------------------------
     RemoteSendAudioStreamTrack::RemoteSendAudioStreamTrack(IMessageQueuePtr queue, IMediaStreamTrackDelegatePtr delegate) :
-      AudioStreamTrack(queue, delegate)
+      AudioStreamTrack(queue, delegate),
+      mChannel(-1)
     {
     }
     
@@ -1006,13 +1016,13 @@ namespace ortc
     //-------------------------------------------------------------------------
     int RemoteSendAudioStreamTrack::getChannel()
     {
-      return MediaStreamTrack::getChannel();
+      return mChannel;
     }
     
     //-------------------------------------------------------------------------
     void RemoteSendAudioStreamTrack::setChannel(int channel)
     {
-      MediaStreamTrack::setChannel(channel);
+      mChannel = channel;
     }
 
     //-----------------------------------------------------------------------
@@ -1104,9 +1114,7 @@ namespace ortc
     void LocalVideoStreamTrack::stop()
     {
       IMediaEnginePtr mediaEngine = IMediaEngine::singleton();
-      
-      mediaEngine->stopVideoCapture(mChannel);
-      
+      mediaEngine->stopVideoCapture(mSource);
     }
 
     //-----------------------------------------------------------------------
@@ -1124,18 +1132,39 @@ namespace ortc
     }
     
     //-------------------------------------------------------------------------
-    int LocalVideoStreamTrack::getChannel()
+    int LocalVideoStreamTrack::getSource()
     {
-      return MediaStreamTrack::getChannel();
+      return mSource;
     }
     
     //-------------------------------------------------------------------------
-    void LocalVideoStreamTrack::setChannel(int channel)
+    void LocalVideoStreamTrack::setSource(int source)
     {
-      MediaStreamTrack::setChannel(channel);
+      mSource = source;
+    }
+
+    //-------------------------------------------------------------------------
+    std::list<int> LocalVideoStreamTrack::getChannels()
+    {
+      return mChannels;
+    }
+    
+    //-------------------------------------------------------------------------
+    void LocalVideoStreamTrack::addChannel(int channel)
+    {
+      mChannels.push_back(channel);
       
       IMediaEnginePtr mediaEngine = IMediaEngine::singleton();
       mediaEngine->startSendVideoChannel(channel, mSource);
+    }
+    
+    //-------------------------------------------------------------------------
+    void LocalVideoStreamTrack::removeChannel(int channel)
+    {
+      mChannels.remove(channel);
+      
+      IMediaEnginePtr mediaEngine = IMediaEngine::singleton();
+      mediaEngine->stopSendVideoChannel(channel);
     }
 
     //-------------------------------------------------------------------------
@@ -1232,7 +1261,8 @@ namespace ortc
     
     //-------------------------------------------------------------------------
     RemoteReceiveVideoStreamTrack::RemoteReceiveVideoStreamTrack(IMessageQueuePtr queue, IMediaStreamTrackDelegatePtr delegate) :
-      VideoStreamTrack(queue, delegate)
+      VideoStreamTrack(queue, delegate),
+      mChannel(-1)
     {
     }
     
@@ -1327,13 +1357,13 @@ namespace ortc
     //-------------------------------------------------------------------------
     int RemoteReceiveVideoStreamTrack::getChannel()
     {
-      return MediaStreamTrack::getChannel();
+      return mChannel;
     }
     
     //-------------------------------------------------------------------------
     void RemoteReceiveVideoStreamTrack::setChannel(int channel)
     {
-      MediaStreamTrack::setChannel(channel);
+      mChannel = channel;
 
       IMediaEnginePtr mediaEngine = IMediaEngine::singleton();
       mediaEngine->setRenderView(channel, mRenderView);
@@ -1362,7 +1392,8 @@ namespace ortc
     
     //-------------------------------------------------------------------------
     RemoteSendVideoStreamTrack::RemoteSendVideoStreamTrack(IMessageQueuePtr queue, IMediaStreamTrackDelegatePtr delegate) :
-      VideoStreamTrack(queue, delegate)
+      VideoStreamTrack(queue, delegate),
+      mChannel(-1)
     {
       
     }
@@ -1458,13 +1489,13 @@ namespace ortc
     //-------------------------------------------------------------------------
     int RemoteSendVideoStreamTrack::getChannel()
     {
-      return MediaStreamTrack::getChannel();
+      return mChannel;
     }
     
     //-------------------------------------------------------------------------
     void RemoteSendVideoStreamTrack::setChannel(int channel)
     {
-      MediaStreamTrack::setChannel(channel);
+      mChannel = channel;
     }
 
     //-------------------------------------------------------------------------
