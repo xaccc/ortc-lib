@@ -39,6 +39,10 @@
 #include <zsLib/Stringize.h>
 #include <zsLib/Log.h>
 #include <zsLib/XML.h>
+#include <android/log.h>
+
+static const char kAES_CM_HMAC_SHA1_80[] = "AES_CM_128_HMAC_SHA1_80";
+static const char kAES_CM_HMAC_SHA1_32[] = "AES_CM_128_HMAC_SHA1_32";
 
 namespace ortc { ZS_DECLARE_SUBSYSTEM(ortclib) }
 
@@ -48,6 +52,21 @@ namespace ortc
 
   namespace internal
   {
+  	  static const size_t kDtlsRecordHeaderLen = 13;
+  	  static const size_t kMaxDtlsPacketLen = 2048;
+  	  static const size_t kMinRtpPacketLen = 12;
+  	  static const size_t kDefaultVideoAndDataCryptos = 1;
+
+	  static bool IsDtlsPacket(const char* data, size_t len) {
+		const uint8* u = reinterpret_cast<const uint8*>(data);
+		return (len >= kDtlsRecordHeaderLen && (u[0] > 19 && u[0] < 64));
+	  }
+
+	  static bool IsRtpPacket(const char* data, size_t len) {
+		const uint8* u = reinterpret_cast<const uint8*>(data);
+		return (len >= kMinRtpPacketLen && (u[0] & 0xC0) == 0x80);
+	  }
+
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
@@ -446,6 +465,7 @@ namespace ortc
         }
 
         if (mDTLSContext) {
+          // TBD -- Need to check the state of sslstream -- if connected then only dtlspackets can be handled
           if (mDTLSContext->handleIfDTLSContextPacket(buffer, bufferLengthInBytes)) {
             ZS_LOG_TRACE(log("packet was handled by DTLS context"))
             return;
@@ -738,6 +758,7 @@ namespace ortc
         if (!mDTLSContext) {
 
           mDTLSContext = DTLSContext::create(
+        		  	  	  	  	  	  	  	 getAssociatedMessageQueue(),
                                              mThisWeak.lock(),
                                              mICETransport->getRole()
                                              );
@@ -903,9 +924,11 @@ namespace ortc
 
     //-------------------------------------------------------------------------
     DTLSTransport::DTLSContext::DTLSContext(
+    										IMessageQueuePtr queue,
                                             DTLSTransportPtr transport,
                                             bool inClientRole
                                             ) :
+	  MessageQueueAssociator(queue),
       mTransport(transport),
       mInClientRole(inClientRole)
     {
@@ -921,6 +944,101 @@ namespace ortc
     //-------------------------------------------------------------------------
     void DTLSTransport::DTLSContext::init()
     {
+    	//set up the dtls context here
+    	//if(!mSSLStreammanager)
+    	{
+    		mSSLStreammanager = ISSLStreamManager::create(mThisWeak.lock());
+    		mDTLSTransportStream = mSSLStreammanager->getSSLTransportStream();
+    		//call getSSLTransportStream here.
+    	}
+
+    	//setupdtls() -- ssl related parameters
+    	if (!SetupDtls())
+    	{
+    	    std::cout << "Error initializing DTLS";
+    	    //TBD - Need to set the state of dtlscontext/dtlstransport object
+    	    //dtls_state_ = STATE_CLOSED;
+    	    return;
+    	 }
+    }
+
+    //-------------------------------------------------------------------------
+    bool DTLSTransport::DTLSContext::SetupDtls() {
+
+      //check if reset is required here
+      //mSSLStreammanager.reset();
+
+      if (!mSSLStreammanager) {
+        std::cout << "Failed to get dtls stream manager instance.";
+        return false;
+      }
+
+#if 1 // TBD -- generate ientity
+      std::string remote_fingerprint_algorithm_ = ortc::internal::DIGEST_SHA_1;
+	  std::vector<std::string> srtp_ciphers_;
+  	  unsigned char digest[20];
+      size_t digest_len;
+#endif
+
+      mSSLStreammanager->SetMode(SSL_MODE_DTLS);
+
+  	  //If the role is contolled that means client --
+      if(mInClientRole)
+      {
+    	  //generate the identity
+      	  std::string param;
+    	  std::string strParam = "ortcclient";
+    	  param = strParam;
+
+    	  //sslId1 = sslId2->Generate(param);
+    	  clientidentity_ = SSLIdentity::Generate(param);
+
+    	  //set the identity for sslstreammanager
+    	  mSSLStreammanager->SetIdentity(clientidentity_);
+
+    	  //set the role for sslstreammanager
+    	  mSSLStreammanager->SetServerRole(SSL_CLIENT);
+      }else
+      {
+    	  //generate the identity
+      	  std::string param;
+    	  std::string strParam = "ortcserver";
+    	  param = strParam;
+
+    	  //sslId1 = sslId2->Generate(param);
+    	  serveridentity_ = SSLIdentity::Generate(param);
+
+    	  //set the identity for sslstreammanager
+    	  mSSLStreammanager->SetIdentity(serveridentity_);
+
+    	  mSSLStreammanager->SetServerRole(SSL_SERVER);
+      }
+
+      //peercertificate digest set
+	  if (!mSSLStreammanager->SetPeerCertificateDigest(remote_fingerprint_algorithm_, digest, digest_len))
+	  {
+		  std::cout << "Couldn't set DTLS certificate digest" << std::endl;
+	  }
+
+	  // Set up DTLS-SRTP, if it's been enabled.
+	  srtp_ciphers_.push_back(kAES_CM_HMAC_SHA1_80);
+	  if (!srtp_ciphers_.empty())
+	  {
+		if (!mSSLStreammanager->SetDtlsSrtpCiphers(srtp_ciphers_))
+		{
+			std::cout << "Couldn't set DTLS-SRTP ciphers" << std::endl;
+		}
+	  }
+	  else
+	  {
+		std::cout << "Not using SRTP" << std::endl;
+	  }
+
+      //start dtls handshake with peer -- This will initiate the state change of sslstreammanager class
+      mSSLStreammanager->StartSSLWithPeer();
+
+     std::cout << "DTLS setup complete.";
+     return true;
     }
 
     //-------------------------------------------------------------------------
@@ -940,12 +1058,14 @@ namespace ortc
 
     //-------------------------------------------------------------------------
     DTLSTransport::DTLSContextPtr DTLSTransport::DTLSContext::create(
+    																 IMessageQueuePtr queue,
                                                                      DTLSTransportPtr transport,
                                                                      IICETransport::Roles role
                                                                      )
     {
-      DTLSContextPtr pThis(new DTLSContext(transport, IICETransport::Role_Controlled == role ? true : false));
+      DTLSContextPtr pThis(new DTLSContext(queue, transport, IICETransport::Role_Controlled == role ? true : false));
       pThis->mThisWeak = pThis;
+      pThis->init();
       return pThis;
     }
 
@@ -1001,8 +1121,54 @@ namespace ortc
       ZS_LOG_DEBUG(log("handle if dtls context packet") + ZS_PARAM("length", bufferLengthInBytes))
 #define TODO 1
 #define TODO 2
-      return false;
+#if 1
+	  if (IsDtlsPacket((const char*)buffer, bufferLengthInBytes)) {
+		  // Sanity check we're not passing junk that
+		  // just looks like DTLS.
+		  const uint8* tmp_data = reinterpret_cast<const uint8* >(buffer);
+		  size_t tmp_size = bufferLengthInBytes;
+		  while (tmp_size > 0) {
+			if (tmp_size < kDtlsRecordHeaderLen)
+			  return false;  // Too short for the header
+
+			size_t record_len = (tmp_data[11] << 8) | (tmp_data[12]);
+			if ((record_len + kDtlsRecordHeaderLen) > tmp_size)
+			  return false;  // Body too short
+
+			tmp_data += record_len + kDtlsRecordHeaderLen;
+			tmp_size -= record_len + kDtlsRecordHeaderLen;
+		  }
+		  
+	  //}
+#endif	  
+      //if dtlspacket then get the writer object from sslstreammanager class and write the data.
+      //TBD//call get
+      openpeer::services::ITransportStreamWriterPtr writerStream;
+	  writerStream = mDTLSTransportStream->getWriter();
+	  writerStream->write(buffer,bufferLengthInBytes);
+	  }else
+	  {
+		  std::cout << "Not a DTLS Context Packet" << std::endl;
+		  return false;
+	  }
+      return true;
     }
+
+#if 1
+    //-----------------------------------------------------------------------
+	#pragma mark
+	#pragma mark DTLSTransport => ISSLStreamManagerDelegate
+	#pragma mark
+
+    void DTLSTransport::DTLSContext::onSSLStreamStateChanged(
+								ISSLStreamManagerPtr sslstreammanager,
+								ISSLStreamManager::SSLConnectionStates state
+								)
+    {
+    	ZS_LOG_DEBUG(log("ice transport state changed") + ZS_PARAM("state", ISSLStreamManager::toString(state)))
+		printf("\n!!! Inside ortc_DTLScontext : ..... onSSLStreamStateChanged().....!!!\n");
+    }
+#endif
 
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
@@ -1075,6 +1241,10 @@ namespace ortc
         ZS_LOG_WARNING(Debug, log("cannot send packet as transport has shutdown"))
         return false;
       }
+
+      //TBD -- Read the buffer using "dtlstransportstream reader" wherer the data has been written by dtls stack
+      //send the data to other peer using sendDTLSContextPacket
+
 
       return outer->sendDTLSContextPacket(buffer, bufferLengthInBytes);
     }

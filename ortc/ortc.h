@@ -34,6 +34,7 @@
 #include <ortc/types.h>
 #include <ortc/IORTC.h>
 #include <ortc/IDTLSTransport.h>
+#include <ortc/ISSLStreamManager.h>
 #include <ortc/IICETransport.h>
 #include <ortc/IRTPSender.h>
 #include <ortc/IRTPReceiver.h>

@@ -42,3 +42,4 @@
 #include <ortc/internal/ortc_MediaEngine.h>
 #include <ortc/internal/ortc_MediaStream.h>
 #include <ortc/internal/ortc_MediaStreamTrack.h>
+#include <ortc/internal/ortc_SSLStreamManager.h>

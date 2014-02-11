@@ -33,12 +33,13 @@
 
 #include <ortc/internal/types.h>
 #include <ortc/internal/ortc_ICETransport.h>
-
+#include <ortc/ISSLStreamManager.h>
 #include <ortc/TrackDescription.h>
 #include <ortc/IDTLSTransport.h>
-
+#include <ortc/IICETransport.h>
+#include <ortc/internal/dtls/ortc_SSLIdentity.h>
 #include <openpeer/services/IWakeDelegate.h>
-
+#include <openpeer/services/ITransportStream.h>
 #include <zsLib/MessageQueueAssociator.h>
 
 namespace ortc
@@ -343,15 +344,22 @@ namespace ortc
       #pragma mark DTLSTransport::DTLSContext
       #pragma mark
 
-      class DTLSContext
+      class DTLSContext : public MessageQueueAssociator,
+      	  	  	  	  	  public ISSLStreamManagerDelegate
       {
       public:
         typedef IDTLSTransportForDTLSContext Transport;
         typedef boost::shared_ptr<IDTLSTransportForDTLSContext> TransportPtr;
         typedef boost::weak_ptr<IDTLSTransportForDTLSContext> TransportWeakPtr;
 
+        //sslstreammanager
+        typedef ISSLStreamManager SSLStreamManager;
+        typedef boost::shared_ptr<ISSLStreamManager> SSLStreamManagerPtr;
+        typedef boost::weak_ptr<ISSLStreamManager> SSLStreamManagerWeakPtr;
+
       protected:
         DTLSContext(
+        			IMessageQueuePtr queue,
                     DTLSTransportPtr transport,
                     bool inClientRole
                     );
@@ -369,6 +377,7 @@ namespace ortc
         static ElementPtr toDebug(DTLSContextPtr context);
 
         static DTLSContextPtr create(
+        							 IMessageQueuePtr queue,
                                      DTLSTransportPtr transport,
                                      IICETransport::Roles role
                                      );
@@ -387,12 +396,24 @@ namespace ortc
                                        const BYTE *buffer,
                                        size_t bufferLengthInBytes
                                        );
+	 	#pragma mark
+	 	#pragma mark DTLSTransport::DTLSContext => ISSLStreamManagerDelegate
+	 	#pragma mark
+
+        virtual void onSSLStreamStateChanged(
+								ISSLStreamManagerPtr sslstreammanager,
+								ISSLStreamManager::SSLConnectionStates state
+								);
+
 
       protected:
         //---------------------------------------------------------------------
         #pragma mark
         #pragma mark DTLSTransport::DTLSContext => (internal)
         #pragma mark
+
+        typedef boost::shared_ptr<SSLIdentity> sslidentityPtr;
+        typedef boost::weak_ptr<SSLIdentity> sslidentityWeakPtr;
 
         Log::Params log(const char *message) const;
         Log::Params debug(const char *message) const;
@@ -412,6 +433,7 @@ namespace ortc
 
         void notifyConnected();
         void notifyShutdown();
+        bool SetupDtls();
 
       protected:
         //---------------------------------------------------------------------
@@ -426,6 +448,11 @@ namespace ortc
         bool mInClientRole;
 
         TransportWeakPtr mTransport;
+        SSLStreamManagerPtr mSSLStreammanager;
+        //sslidentityPtr identity_;
+        SSLIdentity *clientidentity_;
+        SSLIdentity *serveridentity_;
+        ISSLStreamManager::ITransportStreamPtr mDTLSTransportStream;
       };
 
     protected:

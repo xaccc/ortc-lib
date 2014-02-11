@@ -51,7 +51,8 @@ namespace ortc
                     public IMediaManagerFactory,
                     public IMediaStreamFactory,
                     public IMediaStreamTrackFactory,
-                    public IMediaEngineFactory
+                    public IMediaEngineFactory,
+					public ISSLStreamManagerFactory
     {
     public:
       static void override(FactoryPtr override);
