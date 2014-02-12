@@ -58,12 +58,12 @@ namespace ortc
   	  static const size_t kDefaultVideoAndDataCryptos = 1;
 
 	  static bool IsDtlsPacket(const char* data, size_t len) {
-		const uint8* u = reinterpret_cast<const uint8*>(data);
+		const UCHAR* u = reinterpret_cast<const UCHAR*>(data);
 		return (len >= kDtlsRecordHeaderLen && (u[0] > 19 && u[0] < 64));
 	  }
 
 	  static bool IsRtpPacket(const char* data, size_t len) {
-		const uint8* u = reinterpret_cast<const uint8*>(data);
+		const UCHAR* u = reinterpret_cast<const UCHAR*>(data);
 		return (len >= kMinRtpPacketLen && (u[0] & 0xC0) == 0x80);
 	  }
 
@@ -1125,7 +1125,7 @@ namespace ortc
 	  if (IsDtlsPacket((const char*)buffer, bufferLengthInBytes)) {
 		  // Sanity check we're not passing junk that
 		  // just looks like DTLS.
-		  const uint8* tmp_data = reinterpret_cast<const uint8* >(buffer);
+		  const UINT* tmp_data = reinterpret_cast<const UINT* >(buffer);
 		  size_t tmp_size = bufferLengthInBytes;
 		  while (tmp_size > 0) {
 			if (tmp_size < kDtlsRecordHeaderLen)

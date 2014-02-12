@@ -37,7 +37,7 @@
 #include <ortc/TrackDescription.h>
 #include <ortc/IDTLSTransport.h>
 #include <ortc/IICETransport.h>
-#include <ortc/internal/dtls/ortc_SSLIdentity.h>
+#include <ortc/internal/ortc_SSLIdentity.h>
 #include <openpeer/services/IWakeDelegate.h>
 #include <openpeer/services/ITransportStream.h>
 #include <zsLib/MessageQueueAssociator.h>

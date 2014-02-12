@@ -164,16 +164,17 @@ ortc/cpp/ortc_RTCDataChannel.cpp \
 ortc/cpp/ortc_RTCDTMFTrack.cpp \
 ortc/cpp/ortc_RTCStream.cpp \
 ortc/cpp/ortc_RTCTrack.cpp \
-ortc/cpp/dtls/ortc_base64.cc \
-ortc/cpp/dtls/ortc_helpers.cc \
-ortc/cpp/dtls/ortc_stringutils.cc \
-ortc/cpp/dtls/ortc_stringencode.cc \
-ortc/cpp/dtls/ortc_messagedigest.cc \
-ortc/cpp/dtls/ortc_openssldigest.cc \
-ortc/cpp/dtls/ortc_SSLIdentity.cc \
-ortc/cpp/dtls/ortc_opensslidentity.cc \
+ortc/cpp/ortc_SSLIdentity.cpp \
 ortc/cpp/ortc_SSLStreamManager.cpp \
 ortc/cpp/ortc_DTLSTransport.cpp \
+
+#ortc/cpp/dtls/ortc_opensslidentity.cc \
+#ortc/cpp/dtls/ortc_base64.cc \
+#ortc/cpp/dtls/ortc_helpers.cc \
+#ortc/cpp/dtls/ortc_stringutils.cc \
+#ortc/cpp/dtls/ortc_stringencode.cc \
+#ortc/cpp/dtls/ortc_messagedigest.cc \
+#ortc/cpp/dtls/ortc_openssldigest.cc \
 
 #$(info $(LOCAL_PATH))
 

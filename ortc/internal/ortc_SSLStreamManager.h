@@ -35,13 +35,14 @@
 #include <ortc/internal/types.h>
 #include <ortc/ISSLStreamManager.h>
 #include <openpeer/services/ITransportStream.h>
-#include <ortc/internal/dtls/ortc_opensslidentity.h>
+#include <ortc/internal/ortc_SSLIdentity.h>
 #include <openpeer/services/IWakeDelegate.h>
 #include <zsLib/MessageQueueAssociator.h>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/thread.hpp>
 #include <string>
 #include <vector>
+#include <openpeer/services/internal/services_Helper.h>
 
 enum StreamState { SS_CLOSED, SS_OPENING, SS_OPEN };
 
@@ -141,10 +142,10 @@ namespace ortc
       virtual bool GetPeerCertificate(SSLCertificate** cert) const ;
 
       virtual bool ExportKeyingMaterial(const std::string& label,
-                                          const uint8* context,
+                                          const UINT* context,
                                           size_t context_len,
                                           bool use_context,
-                                          uint8* result,
+                                          UINT* result,
                                           size_t result_len);
 
 
@@ -324,7 +325,8 @@ namespace ortc
      boost::shared_ptr<OpenSSLCertificate> peer_certificate_;
      // In peer-to-peer mode, the digest of the certificate that
      // the peer must present.
-     Buffer peer_certificate_digest_value_;
+	 //Buffer peer_certificate_digest_value_;
+     SecureByteBlockPtr peer_certificate_digest_value_;
      std::string peer_certificate_digest_algorithm_;
 
      // OpenSSLAdapter::custom_verify_callback_ result

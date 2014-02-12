@@ -54,12 +54,8 @@
 #include <iostream>
 #include <string>
 #include <unistd.h>
-
-#include "ortc_common.h"
-#include "ortc_openssldigest.h"
-#include "ortc_opensslidentity.h"
-#include "ortc_stringutils.h"
-#include "ortc_sslroots.h"
+#include <boost/regex.hpp>
+#include "ortc/internal/ortc_sslroots.h"
 
 #define MUTEX_TYPE pthread_mutex_t
 #define MUTEX_SETUP(x) pthread_mutex_init(&(x), NULL)
@@ -723,7 +719,10 @@ namespace ortc {
 		if (expected_len != digest_len)
 		  return false;
 
+#if 0
 		peer_certificate_digest_value_.SetData(digest_val, digest_len);
+#endif
+        memcpy(peer_certificate_digest_value_->BytePtr(), digest_val, digest_len);
 		peer_certificate_digest_algorithm_ = digest_alg;
 
 		return true;
@@ -731,19 +730,23 @@ namespace ortc {
 
 	  // Key Extractor interface
 	  bool SSLStreamManager::ExportKeyingMaterial(const std::string& label,
-													  const uint8* context,
+													  const UINT* context,
 													  size_t context_len,
 													  bool use_context,
-													  uint8* result,
+													  UINT* result,
 													  size_t result_len) {
 	  #ifdef HAVE_DTLS_SRTP
 		int i;
-
+#if 0
 		i = SSL_export_keying_material(ssl_, result, result_len,
 									   label.c_str(), label.length(),
 									   const_cast<uint8 *>(context),
 									   context_len, use_context);
-
+#endif
+        i = SSL_export_keying_material(ssl_,(unsigned char*)result, result_len,
+									   label.c_str(), label.length(),
+									   (unsigned char*)const_cast<UINT *>(context),
+									   context_len, use_context);
 		if (i != 1)
 		  return false;
 
@@ -802,10 +805,13 @@ namespace ortc {
 
 		if (!srtp_profile)
 		  return false;
-
+		 boost::is_equal testcompare2;
 		for (SrtpCipherMapEntry *entry = SrtpCipherMap;
 			 entry->internal_name; ++entry) {
+#if 0
 		  if (!strcmp(entry->internal_name, srtp_profile->name)) {
+#endif
+        if (!testcompare2(entry->internal_name, srtp_profile->name))    {
 			*cipher = entry->external_name;
 			return true;
 		  }
@@ -1036,9 +1042,9 @@ namespace ortc {
 	  }
 
 	  int SSLStreamManager::BeginSSL() {
-		ASSERT(mCurrentState == SSL_CONNECTING);
+		ASSERT(mCurrentState == SSLConnectionState_Connecting);
 		// The underlying stream has open. If we are in peer-to-peer mode
-		// then a peer certificate must have been specified by now.
+		//// then a peer certificate must have been specified by now.
 
 		//InitializeSSL(NULL);
 		InitializeSSL();
@@ -1326,7 +1332,11 @@ namespace ortc {
 							 stream->peer_certificate_digest_algorithm_,
 							 digest, sizeof(digest),
 							 &digest_length)) {
+#if 0
 			  Buffer computed_digest(digest, digest_length);
+#endif
+        SecureByteBlockPtr computed_digest(new SecureByteBlock(digest_length));
+            memcpy(computed_digest->BytePtr(), digest, digest_length);
 			  if (computed_digest == stream->peer_certificate_digest_value_) {
 				std::cout <<
 					"Accepted self-signed peer certificate authority";
@@ -1465,7 +1475,12 @@ namespace ortc {
 			for (int j = 0; j < sk_CONF_VALUE_num(value); ++j) {
 			  CONF_VALUE* nval = sk_CONF_VALUE_value(value, j);
 			  // The value for nval can contain wildcards
+#if 0
 			  if (!strcmp(nval->name, "DNS") && string_match(host, nval->value)) {
+#endif
+            boost::regex ex(nval->value);
+			boost::is_equal testcompare1;
+			  if (!testcompare1(nval->name,"DNS") && boost::regex_match(host, ex)) {
 				ok = true;
 				break;
 			  }
@@ -1492,7 +1507,11 @@ namespace ortc {
 			&& (X509_NAME_get_text_by_NID(subject, NID_commonName,
 										  data, sizeof(data)) > 0)) {
 		  data[sizeof(data)-1] = 0;
+#if 0
 		  if (stricmp(data, host) == 0)
+#endif
+        boost::is_equal testcompare;
+		if(testcompare(data,host))
 			ok = true;
 		}
 

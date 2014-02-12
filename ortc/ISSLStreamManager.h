@@ -32,7 +32,7 @@
 #pragma once
 
 #include <ortc/types.h>
-#include "ortc/internal/dtls/ortc_SSLIdentity.h"
+#include "ortc/internal/ortc_SSLIdentity.h"
 
 
 typedef struct ssl_ctx_st SSL_CTX;
@@ -44,7 +44,10 @@ namespace ortc
   enum StreamEvent { SE_OPEN = 1, SE_READ = 2, SE_WRITE = 4, SE_CLOSE = 8 };
   enum SSLRole { SSL_CLIENT, SSL_SERVER };
   enum SSLMode { SSL_MODE_TLS, SSL_MODE_DTLS };
-  
+  using zsLib::string;
+  using zsLib::String;
+  using zsLib::ULONG;
+  using zsLib::UINT;
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
@@ -246,10 +249,10 @@ namespace ortc
       // result              -- where to put the computed value
       // result_len          -- the length of the computed value
       virtual bool ExportKeyingMaterial(const std::string& label,
-                                        const uint8* context,
+                                        const UINT* context,
                                         size_t context_len,
                                         bool use_context,
-                                        uint8* result,
+                                        UINT* result,
                                         size_t result_len)= 0;
 
 
