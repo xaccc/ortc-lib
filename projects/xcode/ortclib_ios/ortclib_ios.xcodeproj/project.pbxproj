@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		005866D918BE5D0900118B85 /* ortc_SRTPEncryption.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 005866D618BE5D0900118B85 /* ortc_SRTPEncryption.cpp */; };
+		005866DA18BE5D0900118B85 /* ortc_SSLIdentity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 005866D718BE5D0900118B85 /* ortc_SSLIdentity.cpp */; };
+		005866DB18BE5D0900118B85 /* ortc_SSLStreamManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 005866D818BE5D0900118B85 /* ortc_SSLStreamManager.cpp */; };
 		00724A70184CF4430049B9EF /* ortc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00724A6F184CF4430049B9EF /* ortc.cpp */; };
 		00724A72184CF4530049B9EF /* ortc_ORTC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00724A71184CF4530049B9EF /* ortc_ORTC.cpp */; };
 		007B98FC1855D657004AC6C0 /* ortc_DTLSTransport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 007B98FB1855D657004AC6C0 /* ortc_DTLSTransport.cpp */; };
@@ -39,6 +42,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		005866D118BE5CE900118B85 /* ISSLStreamManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ISSLStreamManager.h; sourceTree = "<group>"; };
+		005866D218BE5CF900118B85 /* ortc_SRTPEncryption.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ortc_SRTPEncryption.h; sourceTree = "<group>"; };
+		005866D318BE5CF900118B85 /* ortc_SSLIdentity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ortc_SSLIdentity.h; sourceTree = "<group>"; };
+		005866D418BE5CF900118B85 /* ortc_sslroots.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ortc_sslroots.h; sourceTree = "<group>"; };
+		005866D518BE5CF900118B85 /* ortc_SSLStreamManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ortc_SSLStreamManager.h; sourceTree = "<group>"; };
+		005866D618BE5D0900118B85 /* ortc_SRTPEncryption.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ortc_SRTPEncryption.cpp; sourceTree = "<group>"; };
+		005866D718BE5D0900118B85 /* ortc_SSLIdentity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ortc_SSLIdentity.cpp; sourceTree = "<group>"; };
+		005866D818BE5D0900118B85 /* ortc_SSLStreamManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ortc_SSLStreamManager.cpp; sourceTree = "<group>"; };
 		00724A6F184CF4430049B9EF /* ortc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ortc.cpp; sourceTree = "<group>"; };
 		00724A71184CF4530049B9EF /* ortc_ORTC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ortc_ORTC.cpp; sourceTree = "<group>"; };
 		007B98F61855D60A004AC6C0 /* IDTLSTransport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDTLSTransport.h; sourceTree = "<group>"; };
@@ -144,6 +155,7 @@
 				E22F74FF18401C4F008F502E /* IMediaManager.h */,
 				E22F750018401C4F008F502E /* IMediaStream.h */,
 				E22F750118401C4F008F502E /* IMediaStreamTrack.h */,
+				005866D118BE5CE900118B85 /* ISSLStreamManager.h */,
 			);
 			name = ortc;
 			path = ../../../ortc;
@@ -169,6 +181,9 @@
 				E22F74F518401C0D008F502E /* ortc_MediaStream.cpp */,
 				E22F74F618401C0D008F502E /* ortc_MediaStreamTrack.cpp */,
 				E22F74F318401C0D008F502E /* ortc_MediaEngine.cpp */,
+				005866D618BE5D0900118B85 /* ortc_SRTPEncryption.cpp */,
+				005866D718BE5D0900118B85 /* ortc_SSLIdentity.cpp */,
+				005866D818BE5D0900118B85 /* ortc_SSLStreamManager.cpp */,
 			);
 			path = cpp;
 			sourceTree = "<group>";
@@ -193,6 +208,10 @@
 				E22F74FD18401C39008F502E /* ortc_MediaStream.h */,
 				E22F74FE18401C39008F502E /* ortc_MediaStreamTrack.h */,
 				E22F74FB18401C39008F502E /* ortc_MediaEngine.h */,
+				005866D218BE5CF900118B85 /* ortc_SRTPEncryption.h */,
+				005866D318BE5CF900118B85 /* ortc_SSLIdentity.h */,
+				005866D418BE5CF900118B85 /* ortc_sslroots.h */,
+				005866D518BE5CF900118B85 /* ortc_SSLStreamManager.h */,
 			);
 			path = internal;
 			sourceTree = "<group>";
@@ -254,11 +273,14 @@
 				E22F74F718401C0D008F502E /* ortc_MediaEngine.cpp in Sources */,
 				E29D8F0B1824831B00829A25 /* ortc_RTCStream.cpp in Sources */,
 				00724A72184CF4530049B9EF /* ortc_ORTC.cpp in Sources */,
+				005866D918BE5D0900118B85 /* ortc_SRTPEncryption.cpp in Sources */,
 				E22F74F818401C0D008F502E /* ortc_MediaManager.cpp in Sources */,
 				00D8BFA518479BC70001A335 /* ortc_ICETransport.cpp in Sources */,
 				E22F74FA18401C0D008F502E /* ortc_MediaStreamTrack.cpp in Sources */,
+				005866DA18BE5D0900118B85 /* ortc_SSLIdentity.cpp in Sources */,
 				007B990D1856A1CD004AC6C0 /* ortc_RTPSender.cpp in Sources */,
 				007B990E1856A1CD004AC6C0 /* ortc_TrackDescription.cpp in Sources */,
+				005866DB18BE5D0900118B85 /* ortc_SSLStreamManager.cpp in Sources */,
 				00724A70184CF4430049B9EF /* ortc.cpp in Sources */,
 				00D8BFF11848DF280001A335 /* ortc_Helper.cpp in Sources */,
 				E2234BFA18453B3000F9E2C8 /* ortc_Factory.cpp in Sources */,
@@ -289,6 +311,8 @@
 					../../../libs/webrtc/webrtc/voice_engine/include,
 					../../../libs/webrtc/webrtc/video_engine/include,
 					../../../libs/webrtc/webrtc/modules/video_capture/include,
+					../../../libs/openssl/include,
+					../../../libs/webrtc/third_party/libsrtp/include,
 				);
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
@@ -314,6 +338,8 @@
 					../../../libs/webrtc/webrtc/voice_engine/include,
 					../../../libs/webrtc/webrtc/video_engine/include,
 					../../../libs/webrtc/webrtc/modules/video_capture/include,
+					../../../libs/openssl/include,
+					../../../libs/webrtc/third_party/libsrtp/include,
 				);
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";

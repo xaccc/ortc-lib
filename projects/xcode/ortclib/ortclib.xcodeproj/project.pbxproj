@@ -16,6 +16,9 @@
 		00D8BFA918479BF80001A335 /* ortc_Factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00D8BFA718479BF80001A335 /* ortc_Factory.cpp */; };
 		00D8BFAA18479BF80001A335 /* ortc_ICETransport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00D8BFA818479BF80001A335 /* ortc_ICETransport.cpp */; };
 		00D8BFEF1848DF100001A335 /* ortc_Helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00D8BFEE1848DF100001A335 /* ortc_Helper.cpp */; };
+		00D999F818BE4547002E870D /* ortc_SRTPEncryption.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00D999F518BE4547002E870D /* ortc_SRTPEncryption.cpp */; };
+		00D999F918BE4547002E870D /* ortc_SSLIdentity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00D999F618BE4547002E870D /* ortc_SSLIdentity.cpp */; };
+		00D999FA18BE4547002E870D /* ortc_SSLStreamManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00D999F718BE4547002E870D /* ortc_SSLStreamManager.cpp */; };
 		E2260E6418215AAF0084E4A4 /* ortc_RTCTrack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2260E6218215AAF0084E4A4 /* ortc_RTCTrack.cpp */; };
 		E22F74F218401BF1008F502E /* ortc_MediaEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E277059F18370265008AC118 /* ortc_MediaEngine.cpp */; };
 		E23EBC621834181C00C7332E /* ortc_MediaManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E23EBC5F1834181C00C7332E /* ortc_MediaManager.cpp */; };
@@ -55,6 +58,14 @@
 		00D8BFEA1848DC5B0001A335 /* IORTC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IORTC.h; sourceTree = "<group>"; };
 		00D8BFEB1848DECE0001A335 /* ortc_ORTC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ortc_ORTC.h; sourceTree = "<group>"; };
 		00D8BFEE1848DF100001A335 /* ortc_Helper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ortc_Helper.cpp; sourceTree = "<group>"; };
+		00D999F518BE4547002E870D /* ortc_SRTPEncryption.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ortc_SRTPEncryption.cpp; sourceTree = "<group>"; };
+		00D999F618BE4547002E870D /* ortc_SSLIdentity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ortc_SSLIdentity.cpp; sourceTree = "<group>"; };
+		00D999F718BE4547002E870D /* ortc_SSLStreamManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ortc_SSLStreamManager.cpp; sourceTree = "<group>"; };
+		00D999FD18BE456B002E870D /* ISSLStreamManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ISSLStreamManager.h; sourceTree = "<group>"; };
+		00D999FE18BE45B3002E870D /* ortc_SRTPEncryption.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ortc_SRTPEncryption.h; sourceTree = "<group>"; };
+		00D999FF18BE45B3002E870D /* ortc_SSLIdentity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ortc_SSLIdentity.h; sourceTree = "<group>"; };
+		00D99A0018BE45B3002E870D /* ortc_sslroots.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ortc_sslroots.h; sourceTree = "<group>"; };
+		00D99A0118BE45B3002E870D /* ortc_SSLStreamManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ortc_SSLStreamManager.h; sourceTree = "<group>"; };
 		00EAF8D9182B054C00B8E2CE /* license.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = license.txt; path = ../../../license.txt; sourceTree = "<group>"; };
 		E2260E5A18215A190084E4A4 /* ortc_RTCTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ortc_RTCTrack.h; sourceTree = "<group>"; };
 		E2260E5E18215A910084E4A4 /* IRTCTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRTCTrack.h; sourceTree = "<group>"; };
@@ -132,6 +143,7 @@
 				E23EBC591834180700C7332E /* IMediaManager.h */,
 				E23EBC5A1834180700C7332E /* IMediaStream.h */,
 				E23EBC5B1834180700C7332E /* IMediaStreamTrack.h */,
+				00D999FD18BE456B002E870D /* ISSLStreamManager.h */,
 			);
 			name = ortc;
 			path = ../../../ortc;
@@ -157,6 +169,9 @@
 				E23EBC601834181C00C7332E /* ortc_MediaStream.cpp */,
 				E23EBC611834181C00C7332E /* ortc_MediaStreamTrack.cpp */,
 				E277059F18370265008AC118 /* ortc_MediaEngine.cpp */,
+				00D999F518BE4547002E870D /* ortc_SRTPEncryption.cpp */,
+				00D999F618BE4547002E870D /* ortc_SSLIdentity.cpp */,
+				00D999F718BE4547002E870D /* ortc_SSLStreamManager.cpp */,
 			);
 			path = cpp;
 			sourceTree = "<group>";
@@ -181,6 +196,10 @@
 				E23EBC661834183500C7332E /* ortc_MediaStream.h */,
 				E23EBC671834183500C7332E /* ortc_MediaStreamTrack.h */,
 				E277059D18370255008AC118 /* ortc_MediaEngine.h */,
+				00D999FE18BE45B3002E870D /* ortc_SRTPEncryption.h */,
+				00D999FF18BE45B3002E870D /* ortc_SSLIdentity.h */,
+				00D99A0018BE45B3002E870D /* ortc_sslroots.h */,
+				00D99A0118BE45B3002E870D /* ortc_SSLStreamManager.h */,
 			);
 			path = internal;
 			sourceTree = "<group>";
@@ -253,11 +272,14 @@
 				00724A6E184CF42B0049B9EF /* ortc_ORTC.cpp in Sources */,
 				E2D04944182C377B00343A95 /* ortc_RTCDTMFTrack.cpp in Sources */,
 				00D8BFAA18479BF80001A335 /* ortc_ICETransport.cpp in Sources */,
+				00D999F818BE4547002E870D /* ortc_SRTPEncryption.cpp in Sources */,
 				007B9906185661B1004AC6C0 /* ortc_RTPReceiver.cpp in Sources */,
 				E2D04943182C377B00343A95 /* ortc_RTCDataChannel.cpp in Sources */,
 				00D8BFEF1848DF100001A335 /* ortc_Helper.cpp in Sources */,
+				00D999F918BE4547002E870D /* ortc_SSLIdentity.cpp in Sources */,
 				007B9908185665BC004AC6C0 /* ortc_TrackDescription.cpp in Sources */,
 				E23EBC621834181C00C7332E /* ortc_MediaManager.cpp in Sources */,
+				00D999FA18BE4547002E870D /* ortc_SSLStreamManager.cpp in Sources */,
 				00D8BFA918479BF80001A335 /* ortc_Factory.cpp in Sources */,
 				E23EBC631834181C00C7332E /* ortc_MediaStream.cpp in Sources */,
 				E23EBC641834181C00C7332E /* ortc_MediaStreamTrack.cpp in Sources */,
@@ -312,6 +334,8 @@
 					../../../libs/webrtc/webrtc/voice_engine/include,
 					../../../libs/webrtc/webrtc/video_engine/include,
 					../../../libs/webrtc/webrtc/modules/video_capture/include,
+					../../../libs/openssl/include,
+					../../../libs/webrtc/third_party/libsrtp/include,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				ONLY_ACTIVE_ARCH = YES;
@@ -361,6 +385,8 @@
 					../../../libs/webrtc/webrtc/voice_engine/include,
 					../../../libs/webrtc/webrtc/video_engine/include,
 					../../../libs/webrtc/webrtc/modules/video_capture/include,
+					../../../libs/openssl/include,
+					../../../libs/webrtc/third_party/libsrtp/include,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				SDKROOT = macosx;
